@@ -6,7 +6,7 @@ Benchmarking long-read STR callers
 # download
 Execute the following command.
 ```
-git clone https://github.com/aryarm/str_ase
+git clone https://github.com/aryarm/str_callers
 ```
 Example data for the pipeline is also available for download upon request.
 
@@ -15,7 +15,7 @@ The pipeline is written as a Snakefile which can be executed via [Snakemake](htt
 ```
 conda create -n snakemake -c conda-forge --no-channel-priority 'bioconda::snakemake==6.4.1'
 ```
-We highly recommend you install [Snakemake via conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html#installation-via-conda) like this so that you can use the `--use-conda` flag when calling `snakemake` to let it [automatically handle all dependencies](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) of the pipeline. Otherwise, you must manually install the dependencies listed in the [env files](env/).
+We highly recommend you install [Snakemake via conda](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html#installation-via-conda) like this so that you can use the `--use-conda` flag when calling `snakemake` to let it [automatically handle all dependencies](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) of the pipeline. Otherwise, you must manually install the dependencies listed in the [env files](workflow/envs/).
 
 # execution
 1. Activate snakemake via `conda`:
@@ -31,7 +31,7 @@ We highly recommend you install [Snakemake via conda](https://snakemake.readthed
 Log files describing the output of the pipeline will be created within the output directory. The `log` file contains a basic description of the progress of each rule, while the `qlog` file is more detailed.
 
 ### Executing the pipeline on your own data
-You must modify [the config.yaml file](config.yml) to specify paths to your data before you perform step 2 above. Currently, the pipeline is configured to run on our example data.
+You must modify [the config.yaml file](config/config.yml) to specify paths to your data before you perform step 2 above. Currently, the pipeline is configured to run on our example data.
 
 ### If this is your first time using Snakemake
 Snakemake is a tool for creating and running pipelines. The contents of the pipeline are specified as a set of steps (called _rules_) in a special file, called a Snakefile. Each step consists of inputs, outputs, a shell command (that uses the inputs to create the outputs), and a conda environment with software dependencies for the shell command. When you execute Snakemake, it will assemble the rules into a pipeline according to each rule's inputs and outputs, along with the outputs that you request from Snakemake.

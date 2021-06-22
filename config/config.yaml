@@ -36,7 +36,7 @@ full_in:
 out: out
 
 # Which variant callers should we use?
-# Defaults to all if this option is set to a false value
+# Defaults to all if this option is set to a falsey value or not specified
 callers: false
 
 # Which field in each caller's VCF contains genotype scores?

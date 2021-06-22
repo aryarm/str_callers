@@ -13,10 +13,12 @@ def check_config(value, default=False, place=config):
     return place[value] if (value in place and place[value]) else default
 # handle defaults
 config['out'] = check_config('out', 'out')
+config['callers'] = check_config('callers')
 config['develop'] = check_config('develop')
 
 # remove any trailing slashes in directories and set variables
 out = str(Path(config['out']))
+logs = out+"/logs"
 ref = config['ref']
 truth = config['develop_in']['truth'] if config['develop'] else config['full_in']['truth']
 reads = {}
