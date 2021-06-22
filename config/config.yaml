@@ -1,0 +1,62 @@
+# This is the Snakemake configuration file that specifies paths and 
+# and options for the pipeline. Anybody wishing to use
+# the provided snakemake pipeline should first fill out this file with paths to
+# their own data, as the Snakefile requires it.
+# Every config option has reasonable defaults unless it is labeled as "required."
+# All paths are relative to the directory that Snakemake is executed in.
+# Note: this file is written in the YAML syntax (https://learnxinyminutes.com/docs/yaml/)
+
+# Inputs for development mode
+# "illumina" refers to a CRAM file containing short-read, illumina reads
+# "ont" refers to a BAM file containing long reads for a single chromosme sequenced
+#       using Oxford Nanopore
+# "known" refers to a bed file containing a list of known STRs
+# "truth" refers to a gzipped VCF containing known, high-confidence variants for NA12878 (required!)
+# Note: each file must have a corresponding index in the same directory
+develop_in:
+    tech:
+        illumina: 
+        ont: 
+        pacbio: 
+    known: 
+    chr: chr21
+    truth: 
+
+# Inputs for the full run
+full_in:
+    tech:
+        illumina: 
+        ont: 
+        pacbio: 
+    known: 
+    truth: 
+
+# Path to the directory in which to store all output of the pipeline
+# Defaults to "out" if not specified
+out: out
+
+# Which variant callers should we use?
+# Defaults to all if this option is set to a false value
+callers: false
+
+# Which field in each caller's VCF contains genotype scores?
+# This information is useful for creating precision-recall curves
+# You can specify null if the caller does not output a scoring field
+# If not specified (or falsey), this will default to GQX (or GQ, otherwise)
+# TODO: this is still not implemented in the Snakefile
+caller_score:
+    picky: null
+    sniffles: null
+    cutesv: null # GQ exists but it's empty -__-
+    longshot: false
+
+# Path to the fasta file for the hg38 ref genome
+# An index (.fai) file with the same filename must exist in the same directory
+# required
+ref: ../teams/CSE284_SP21_A00/team2/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fasta
+
+# Are we in development mode?
+# If this option is set to true, the pipeline will use the input data in "development"
+# above instead of using the full dataset.
+# Defaults to false if not specified
+develop: true

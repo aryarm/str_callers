@@ -1,0 +1,41 @@
+import warnings
+from pathlib import Path
+from snakemake.utils import min_version
+
+##### set minimum snakemake version #####
+min_version("6.4.1")
+
+# IMPORT CONFIG VARIABLES
+configfile: "config/config.yaml"
+
+def check_config(value, default=False, place=config):
+    """ return true if config value exists and is true """
+    return place[value] if (value in place and place[value]) else default
+# handle defaults
+config['out'] = check_config('out', 'out')
+config['develop'] = check_config('develop')
+
+# remove any trailing slashes in directories and set variables
+out = str(Path(config['out']))
+ref = config['ref']
+truth = config['develop_in']['truth'] if config['develop'] else config['full_in']['truth']
+reads = {}
+
+# if we're in development mode, get the reads from the development input instead of the full input
+for tech in config['develop_in' if config['develop'] else 'full_in']['tech']:
+    reads[tech] = config['develop_in']['tech'][tech]
+
+# WHICH CALLERS TO RUN?
+# This is a list of the callers that we support. A subset of these callers can be specified in the config.
+callers = {
+    ''
+}
+if config['callers']:
+    # double check that the user isn't asking for callers that we can't run
+    if not callers.issuperset(config['callers']):
+        warnings.warn("Not all of the callers requested can be executed. Proceeding with as many callers as is possible...")
+    callers = callers.intersection(config['callers'])
+
+rule all:
+   input:
+        vcfs = expand(out+"/{tech}/variants/{caller}.vcf.gz", tech = reads.keys() , caller = callers)
