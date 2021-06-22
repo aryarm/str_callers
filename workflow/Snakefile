@@ -20,7 +20,7 @@ config['develop'] = check_config('develop')
 out = str(Path(config['out']))
 logs = out+"/logs"
 ref = config['ref']
-truth = config['develop_in']['truth'] if config['develop'] else config['full_in']['truth']
+truth = config['develop_in' if config['develop'] else 'full_in']['truth']
 reads = {}
 
 # if we're in development mode, get the reads from the development input instead of the full input
