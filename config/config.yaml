@@ -8,25 +8,22 @@
 
 # Inputs for development mode
 # "illumina" refers to a CRAM file containing short-read, illumina reads
-# "ont" refers to a BAM file containing long reads for a single chromosme sequenced
-#       using Oxford Nanopore
+# "pacbio" refers to a BAM file containing PacBio HiFi long reads
 # "known" refers to a bed file containing a list of known STRs
 # "truth" refers to a gzipped VCF containing known, high-confidence variants for NA12878 (required!)
 # Note: each file must have a corresponding index in the same directory
 develop_in:
     tech:
-        illumina: 
-        ont: 
-        pacbio: 
-    known: 
+        illumina: data/illumina.bam
+        pacbio: data/pacbio.bam
+    known: data/known.vcf.gz
     chr: chr21
-    truth: 
+    truth: data/truth.vcf.gz
 
 # Inputs for the full run
 full_in:
     tech:
         illumina: 
-        ont: 
         pacbio: 
     known: 
     truth: 
@@ -35,25 +32,18 @@ full_in:
 # Defaults to "out" if not specified
 out: out
 
-# Which variant callers should we use?
-# Defaults to all if this option is set to a falsey value or not specified
-callers: false
-
 # Which field in each caller's VCF contains genotype scores?
 # This information is useful for creating precision-recall curves
 # You can specify null if the caller does not output a scoring field
 # If not specified (or falsey), this will default to GQX (or GQ, otherwise)
 # TODO: this is still not implemented in the Snakefile
 caller_score:
-    picky: null
-    sniffles: null
-    cutesv: null # GQ exists but it's empty -__-
-    longshot: false
+    gangstr: null
 
 # Path to the fasta file for the hg38 ref genome
 # An index (.fai) file with the same filename must exist in the same directory
 # required
-ref: ../teams/CSE284_SP21_A00/team2/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fasta
+ref: data/ref.fa.gz
 
 # Are we in development mode?
 # If this option is set to true, the pipeline will use the input data in "development"

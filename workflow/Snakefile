@@ -5,6 +5,13 @@ from snakemake.utils import min_version
 ##### set minimum snakemake version #####
 min_version("6.4.1")
 
+# WHICH CALLERS TO RUN?
+# This is a list of the callers that we will execute
+# This dictionary also defines which callers can be executed on each sequencing tech.
+callers = {
+    'illumina': {'hipstr', 'gangstr'}, 'pacbio': {''}
+}
+
 # IMPORT CONFIG VARIABLES
 configfile: "config/config.yaml"
 
@@ -19,25 +26,36 @@ config['develop'] = check_config('develop')
 # remove any trailing slashes in directories and set variables
 out = str(Path(config['out']))
 logs = out+"/logs"
+bench = out+"/bench"
 ref = config['ref']
 truth = config['develop_in' if config['develop'] else 'full_in']['truth']
+known = config['develop_in' if config['develop'] else 'full_in']['known']
 reads = {}
 
-# if we're in development mode, get the reads from the development input instead of the full input
+# if we're in develop mode, get the reads from the development input instead of the
+# full input
 for tech in config['develop_in' if config['develop'] else 'full_in']['tech']:
     reads[tech] = config['develop_in']['tech'][tech]
 
-# WHICH CALLERS TO RUN?
-# This is a list of the callers that we support. A subset of these callers can be specified in the config.
-callers = {
-    ''
-}
-if config['callers']:
-    # double check that the user isn't asking for callers that we can't run
-    if not callers.issuperset(config['callers']):
-        warnings.warn("Not all of the callers requested can be executed. Proceeding with as many callers as is possible...")
-    callers = callers.intersection(config['callers'])
-
 rule all:
    input:
-        vcfs = expand(out+"/{tech}/variants/{caller}.vcf.gz", tech = reads.keys() , caller = callers)
+        vcfs = [
+            out+"/{tech}/variants/{caller}.vcf.gz".format(tech=tech, caller=caller)
+            for tech in callers for caller in callers[tech]
+        ]
+
+rule gangstr:
+    input:
+        bam = lambda wildcards: reads[wildcards.tech],
+        ref = ref,
+        known = known
+    params:
+        out = lambda wildcards, output: Path(output.vcf).parent
+    output:
+        vcf = out+"/{tech}/variants/gangstr.vcf.gz"
+    log: logs+"/gangstr_{tech}.log"
+    benchmark: bench+"/gangstr_{tech}.tsv"
+    conda: "envs/gangstr.yaml"
+    shell:
+        "GangSTR --bam {input.bam} --ref {input.ref} "
+        "--regions {input.known} --out {params.out}"
