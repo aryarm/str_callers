@@ -1,0 +1,4 @@
+channels:
+  - conda-forge
+dependencies:
+  - bioconda::gangstr==2.5.0
