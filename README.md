@@ -26,7 +26,7 @@ We highly recommend you install [Snakemake via conda](https://snakemake.readthed
 
     Locally:
     ```
-    ./run &
+    ./run.bash &
     ```
 Log files describing the output of the pipeline will be created within the output directory. The `log` file contains a basic description of the progress of each rule, while the `qlog` file is more detailed.
 
